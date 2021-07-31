@@ -6,43 +6,49 @@ user auth ------------------------------
 -> composer create-project laravel/laravel example-app
 
 2. open project without artisan
--> rename server.php to index.php in root folder then move .htaccess file from public folder to root folder
+  > rename server.php to index.php in root folder then move .htaccess file from public folder to root folder
 
 3. run project using localhost/<projectName>
 
 4. create user authentication using below commands
--> composer require laravel/ui
--> php artisan ui vue --auth (you can use bootstrap/vue/React etc insted of vue)
--> npm install
--> npm run dev
+  > composer require laravel/ui
+  > php artisan ui vue --auth (you can use bootstrap/vue/React etc insted of vue)
+  > npm install
+  > npm run dev
 
 5. configure database in .env and run below command
--> php artisan migrate
+  > php artisan migrate
 
 
 
 admin auth ------------------------------
 
 1) create migration for admin table
--> php artisan make:migration create_admins_table --create=admins and put below code in newly created migration
+   > php artisan make:migration create_admins_table --create=admins and put below code in newly created migration     
+        
+        
+
+ ``````````````````````````````````````````````````````````````````````````````````````````````````````
     $table->increments('id');
     $table->string('name');
     $table->string('email')->unique();
     $table->timestamp('email_verified_at')->nullable();
     $table->string('password');
     $table->rememberToken();
-    $table->timestamps();
-
+    $table->timestamps();  
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````
+        
+     
 2. run migration using "php artisan migrate"
 
 3. create a folder "Admin" in app/Models/ then copy User.php model in Admin folder then do below changes
--> rename model User.php to Admin.php and change class User to Admin
-->  change name space namespace App\Models\Admin;
+ > rename model User.php to Admin.php and change class User to Admin
+ >  change name space namespace App\Models\Admin;
 Path : app\Models\Admin\Admin.php
 
-4. open config/auth and set guards and providers like below
-Example :
-// guards
+4. open config/auth and set guards and providers like below,
+        
+``````````````````````````````````    
 'guards' => [
         'web' => [
             'driver' => 'session',
@@ -61,8 +67,6 @@ Example :
         ],
     ],
 
-//Providers
-
 'providers' => [
         'users' => [
             'driver' => 'eloquent',
@@ -75,35 +79,44 @@ Example :
         ],
     ],
 
-
+`````````````````````````````````````````````````````````
 
 5. put "protected $guard = "admin";" in Admin model(app\Models\Admin\Admin.php)
 
 dashboard creating after login -------------------------
 
 6. in app\Http\Controllers\ do the below steps
-->create a folder named "Admin" in app\Http\Controllers\ ,
-->then copy app\Http\Controllers\HomeController.php then paste in app\Http\Controllers\Admin\ and rename it to AdminController.php and change its class name as the controller name change code in index method like ( return view('admin.home');)
-->change constructor in AdminController.php
+        
+> create a folder named "Admin" in app\Http\Controllers\ ,
+> then copy app\Http\Controllers\HomeController.php then paste in app\Http\Controllers\Admin\ and rename it to AdminController.php and change its class name as the controller name change code in index method like ( return view('admin.home');)
+> change constructor in AdminController.php
+        
+  
+   ````````````````````````````````````````````
+        
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
+        
+ `````````````````````````````````````````````````````       
 
 7. open routes\web.php and add this route "Route::get('/Admin-home', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.home');"
 
 8. create a folder "admin" in resources/views then do below procedure
--> copy layouts folder and home.blade.php and pest it into resources/views/admin/
--> open home.blade.php and change @extends('layouts.app') to @extends('admin.layouts.app')
+  > copy layouts folder and home.blade.php and pest it into resources/views/admin/
+  > open home.blade.php and change @extends('layouts.app') to @extends('admin.layouts.app')
 
 creating auth controllers --------------------------------------------------
 
 9. copy auth folder from app\Http\Controllers\ and paste it in app\Http\Controllers\Admin and do below steps
 
-1) change name space of all controllers of Admin\Auth\ like "namespace App\Http\Controllers\Admin\Auth";
+ > change name space of all controllers of Admin\Auth\ like "namespace App\Http\Controllers\Admin\Auth";
 
 creating auth routes ----------------------------------------------------------
+        
 
+  ```````````````````````````````````````````````````````````````````````````````````````````````````      
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\Auth\LoginController;
@@ -129,22 +142,38 @@ Route::prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.home');
 });
 
+```````````````````````````````````````````````````````````````````````````````````````````````````````````````````   
+        
 
 admin login -----------------------------------------------------------------
+        
+        
 
-1) open app\Http\Controllers\Admin\Auth\LoginController.php and put below code
-
+1) open app\Http\Controllers\Admin\Auth\LoginController.php and put below code,
+        
+        
+``````````````````````````````````````````````````````````````````````````````````````
     public function showLoginForm()
     {
         return view('admin.auth.login');
     }
+```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````  
+        
+        
+        
+        
 
-2) copy auth folder from resources\views\ and paste it in resources\views\admin
+2) copy auth folder from resources\views\ and paste it in resources\views\admin,
 
-3) change form action in resources\views\admin\auth\login.blade.php like "{{ route('admin.login') }}"
+3) change form action in resources\views\admin\auth\login.blade.php like "{{ route('admin.login') }}",
 
-4) and put below code in app\Http\Controllers\Admin\Auth\LoginController.php with name space "use Illuminate\Http\Request;"
+4) and put below code in app\Http\Controllers\Admin\Auth\LoginController.php with name space "use Illuminate\Http\Request;",
+        
+        
+        
+        
 
+ ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
  /**
      * login
      *
@@ -169,12 +198,21 @@ admin login -----------------------------------------------------------------
         // if unsuccessful, then redirect back to the login with the form data
         return redirect()->back()->withInput($request->only('email', 'remember'));
     }
-
-5) put below code with use Illuminate\Support\Arr; in app\Exceptions\Handler.php for redirect to right login page if not authenticated user
-
-/**
+        
+`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+        
+        
+        
+        
+        
+5) put below code with use Illuminate\Support\Arr; in app\Exceptions\Handler.php for redirect to currect login page if not authenticated user,        
+        
+    
+        
+ ```       
+       
+   /**
      * Convert an authentication exception into an unauthenticated response.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Auth\AuthenticationException  $exception
      * @return \Illuminate\Http\Response
@@ -184,23 +222,31 @@ admin login -----------------------------------------------------------------
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-
         $guard = Arr::get($exception->guards(), 0);
-
         switch ($guard) {
           case 'admin':
             $login = 'admin.login';
             break;
-
           default:
             $login = 'login';
             break;
         }
         return redirect()->guest(route($login));
     }
+                
+ ```
+        
+        
+        
+        
+        
+     
 
-6) open middleware app\Http\Middleware\RedirectIfAuthenticated.php and change handle function like below
-
+6) open middleware app\Http\Middleware\RedirectIfAuthenticated.php and change handle function like below,
+        
+   
+`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+        
  public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
@@ -223,15 +269,20 @@ admin login -----------------------------------------------------------------
 
         return $next($request);
     }
+        
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````      
 
+        
+        
 admin logout-----------------------------------------
 
-1) add route for admin login
-
- Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
-
-2) add this logout method to app\Http\Controllers\Admin\Auth\LoginController.php
-/**
+1) add this logout method to app\Http\Controllers\Admin\Auth\LoginController.php
+        
+        
+        
+```
+        
+   /**
      * Log the user out of the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -243,15 +294,29 @@ admin logout-----------------------------------------
 
         return redirect()->route('admin.login');
     }
+        
+```    
+        
+        
 
 3) change constructor in app\Http\Controllers\Admin\Auth\LoginController.php
-
+        
+        
+        
+```
+        
  $this->middleware('guest:admin', ['except'=>['logout']]);
+        
+```      
+        
 
 forgot password ---------------------------------------------------
 
 1) open config\auth.php and modify password broker like below
+        
 
+ ```
+        
 'passwords' => [
     'users' => [
         'provider' => 'users',
@@ -266,18 +331,39 @@ forgot password ---------------------------------------------------
         'throttle' => 60,
     ],
 ],
+        
+```
+        
+        
+        
 
 2) open app\Http\Controllers\Admin\Auth\ResetPasswordController.php and put below code
+        
+        
+```
+        
 use Illuminate\Http\Request;
 use Password;
 use Auth;
+        
+```        
 
--> modify redirectTo
-
+        
+> modify redirectTo
+        
+        
+```
+        
 protected $redirectTo = '/admin';
+        
+```       
+        
 
--> modify __consrtuct() function as below
-
+> modify __consrtuct() function and put below code
+        
+        
+```
+        
 /**
  * Creating a new controller instance
  *
@@ -287,11 +373,9 @@ public function __consrtuct()
 {
   $this->middleware('guest:admin');
 }
-
-->put a guard like below
-
+        
 /**
- * [guard description]
+ * admin guard
  * @return [type] [description]
  */
   protected function guard()
@@ -299,10 +383,8 @@ public function __consrtuct()
     return Auth::guard('admin');
   }
 
--> put password broker function
-
 /**
- * [broker description]
+ * Password broker
  * @return [type] [description]
  */
   protected function broker()
@@ -310,11 +392,17 @@ public function __consrtuct()
     return Password::broker('admins');
   }
 
-
+```
+        
+        
 
 
 3) put construct function in app\Http\Controllers\Admin\Auth\ForgotPasswordController.php
-
+        
+        
+        
+```
+        
 use Password;
 
 /**
@@ -327,19 +415,27 @@ public function __consrtuct()
   $this->middleware('guest:admin');
 }
 
- -> put password broker like below
 
  /**
-  * [broker description]
+  * password broker
   * @return [type] [description]
   */
    protected function broker()
    {
      return Password::broker('admins');
    }
-
-  -> take code from Illuminate\Foundation\Auth\SendsPasswordResetEmails; and modify like this it is use for view
-
+        
+```
+        
+        
+        
+        
+  > take code from Illuminate\Foundation\Auth\SendsPasswordResetEmails; and modify like this it is use for view
+        
+        
+        
+```
+        
   /**
    * Display the form to request a password reset link.
    *
@@ -350,24 +446,29 @@ public function __consrtuct()
       return view('admin.auth.passwords.email');
   }
 
-
+```
+        
 
  4) setup views
 
  1) open resources\views\admin\auth\passwords\email.blade.php and change below things
 
-   ->form action change :  action="{{ route('admin.password.email') }}
-   ->form name change   : {{ __('Admin Reset Password') }}
+   > form action change :  action="{{ route('admin.password.email') }}
+   > form name change   : {{ __('Admin Reset Password') }}
 
   2) open resources\views\admin\auth\passwords\reset.blade.php and change below places
 
-  ->form action change :  action="{{ route('admin.password.request') }}
-  ->form name change   : {{ __('Admin Reset Password') }}
+   > form action change :  action="{{ route('admin.password.request') }}
+   > form name change   : {{ __('Admin Reset Password') }}
 
   5) setup notification
 
   1) put below code in admin model app\Models\Admin\Admin.php
-
+        
+        
+        
+```
+        
   use App\Notifications\AdminResetPasswordNotification;
 
   /**
@@ -380,9 +481,18 @@ public function __consrtuct()
   {
      $this->notify(new AdminResetPasswordNotification($token));
   }
-
+        
+```
+        
+        
+        
   2) run below command "php artisan make:notification AdminResetPasswordNotification" and open app\Notifications\AdminResetPasswordNotification.php and do the change as below
-->
+
+        
+        
+        
+   ```
+        
   public $token;
 
   /**
@@ -408,9 +518,16 @@ public function __consrtuct()
                   ->action('Reset Password', route('admin.password.reset', $this->token))
                   ->line('If you did not request a password reset, no further action is required,');
   }
-
+        
+```
+        
+        
   3) open app\Http\Controllers\Auth\ResetPasswordController.php and add below code
-
+        
+        
+        
+```
+        
   /**
    * Display the password reset view for the given token.
    *
@@ -427,11 +544,20 @@ public function __consrtuct()
           ['token' => $token, 'email' => $request->email]
       );
   }
-
+        
+```
+        
+        
+        
   4) open resources\views\admin\auth\login.blade.php and change route like below
-
+        
+        
+```
+        
   @if (Route::has('admin.password.request'))
       <a class="btn btn-link" href="{{ route('admin.password.request') }}">
           {{ __('Forgot Your Password?') }}
       </a>
   @endif
+        
+  ```    
