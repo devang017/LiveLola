@@ -11,9 +11,13 @@ user auth ------------------------------
 3. run project using localhost/<projectName>
 
 4. create user authentication using below commands
+    
   > composer require laravel/ui
+    
   > php artisan ui vue --auth (you can use bootstrap/vue/React etc insted of vue)
+    
   > npm install
+    
   > npm run dev
 
 5. configure database in .env and run below command
