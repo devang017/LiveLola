@@ -3,7 +3,7 @@ Laravel multiple auth =========================
 user auth ------------------------------
 
 1. install laravel 8 using below command
--> composer create-project laravel/laravel example-app
+> composer create-project laravel/laravel example-app
 
 2. open project without artisan
   > rename server.php to index.php in root folder then move .htaccess file from public folder to root folder
