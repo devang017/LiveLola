@@ -18,7 +18,7 @@ user auth ------------------------------
     
   > npm install
     
-  > npm run dev
+  > npm run dev / npm run build
 
 5. configure database in .env and run below command
   > php artisan migrate
